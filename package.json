@@ -1,0 +1,19 @@
+{
+  "name": "proceduralart",
+  "version": "1.0.0",
+  "description": "This is a simple website that procedurally generates pixel art.",
+  "main": "index.html",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/vladjerca/proceduralart.git"
+  },
+  "author": "vladjerca",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/vladjerca/proceduralart/issues"
+  },
+  "homepage": "https://github.com/vladjerca/proceduralart#readme"
+}
