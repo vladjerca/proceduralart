@@ -11,7 +11,7 @@ function discoverNew() {
 		draw(canvas, seed);
 		btnDiscoverNew.innerHTML = 'discover new planet';
 		document.title = "Every Planet Procedural";
-		document.getElementById('permalink').href = '/proceduralart/?planet=' + seed;
+		document.getElementById('permalink').href = '/?planet=' + seed;
 	}, 0);
 
 	return false;
@@ -23,7 +23,7 @@ if (getQueryParams(document.location.search).planet !== undefined) {
 	btnDiscoverNew.onclick = discoverNew;
 }
 
-document.getElementById('permalink').href = '/proceduralart/?planet=' + seed;
+document.getElementById('permalink').href = '/?planet=' + seed;
 
 document.title = "Working...";
 draw(canvas, seed);
