@@ -5,27 +5,24 @@
 	<meta http-equiv="content-type" content="text/html; charset=utf-8">
 	<meta name="viewport" content="width=1280" />
 	<meta name="description"
-		content="A procedural pixelart generator. Makes images of alien planets, inspired by No Man's Sky." />
+		content="A procedural pixel-art generator. Makes images of alien planets, inspired by No Man's Sky." />
 
 	<title>Every planet procedural</title>
 	<link rel="stylesheet" href="style.css">
 
-	<!-- https://github.com/josephg/noisejs -->
-	<script src="perlin.js"></script>
 	<script src="seedrandom.min.js"></script>
-	<script src="helpers.js"></script>
-	<script src="planet.js"></script>
 </head>
 
 <body>
-	<canvas id="myCanvas" width="640" height="360"></canvas>
+	<canvas id="canvas" width="320" height="180"></canvas>
+
 	<div class="controls">
-		<a href="" id="permalink">permalink</a>
+		<a href="" id="permalink">Permalink</a>
 		&middot;
-		<a href="." id="discovernew">discover new planet</a>
+		<a href="." id="discovernew">Explore the universe...</a>
 	</div>
 
-	<script src="script.js"></script>
+	<script type="module" src="index.mjs"></script>
 </body>
 
 </html>

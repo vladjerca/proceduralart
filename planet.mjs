@@ -1,7 +1,10 @@
+import './perlin.mjs';
+import { getBool, getColorString, getFloat, getInt, getPivot, getRGB, simplex } from './helpers.mjs';
+
 var scene = {};
 
 function getHue(pivot) {
-	return (getBool(pivot + 1) ? scene.skyhue : scene.terrainhue) + 0.1 * (getInt(3, pivot) - 1);
+	return (getBool(pivot + 1) ? scene.skyhue : scene.terrainhue) + 0.1 * (getInt(scene.seed, 3, pivot) - 1);
 }
 
 function setupCanvas(canvas) {
@@ -86,14 +89,14 @@ function drawBrightStar(x,y,size) {
 }
 
 function drawStarships(x, y) {
-	var dx = getInt(3, getPivot('starshipdir')) - 1;
+	var dx = getInt(scene.seed, 3, getPivot('starshipdir')) - 1;
 	var dy = dx == 0 ? 1 : 0;
 	var dx2 = dy;
 	var dy2 = 1 - dy;
-	var size = getInt(8, getPivot('starshipsize')) + 5;
+	var size = getInt(scene.seed, 8, getPivot('starshipsize')) + 5;
 	if (size % 2 == 0) size++;
-	var count = Math.floor(Math.pow(getFloat(getPivot('starshipcount')), 3) * 4) + 1;
-	var spread = getFloat(getPivot('starshipspread')) * 2;
+	var count = Math.floor(Math.pow(getFloat(scene.seed, getPivot('starshipcount')), 3) * 4) + 1;
+	var spread = getFloat(scene.seed, getPivot('starshipspread')) * 2;
 	
 	for (var i = 0; i < count; i++) {
 		for (var j = 0; j < size; j++) {
@@ -109,7 +112,7 @@ function drawStarships(x, y) {
 	var exhausthue = scene.skyhue + 0.5;
 	if (exhausthue > 1)
 		exhausthue -= 1;
-	var exhaustlength = (3 + getInt(9, getPivot('exhaustlength'))) * size;
+	var exhaustlength = (3 + getInt(scene.seed, 9, getPivot('exhaustlength'))) * size;
 	
 	for (var i = 0; i < count; i++) {
 		for (var j = 0; j < exhaustlength; j++) {
@@ -138,8 +141,8 @@ function drawSun(x, y, size) {
 }
 
 function drawClouds() {
-	scene.cloudstart = getFloat(getPivot('cloudstart'),0.5,0.8);
-	scene.cloudfuzzyness = Math.pow(getFloat(getPivot('cloudfuzzyness')),2) * 0.4;
+	scene.cloudstart = getFloat(scene.seed, getPivot('cloudstart'),0.5,0.8);
+	scene.cloudfuzzyness = Math.pow(getFloat(scene.seed, getPivot('cloudfuzzyness')),2) * 0.4;
 	for (var x = 0; x < scene.width; x++) {
 		for (var y = 0; y < Math.min(terrain1at(x), terrain2at(x)); y++) {
 			setPixelRGB(x,y,255,255,255,simplex(x/400,Math.pow(y/150+1,1.5),5, scene.cloudstart,scene.cloudstart + scene.cloudfuzzyness) * (0.1 + scene.cloudfuzzyness / 0.35));
@@ -148,8 +151,8 @@ function drawClouds() {
 }
 
 function drawAtlas () {
-	var x = scene.width * (0.2 + 0.6 * getFloat(getPivot('atlasx')));
-	var y = scene.height * (0.1 + 0.3 * getFloat(getPivot('atlasy')));
+	var x = scene.width * (0.2 + 0.6 * getFloat(scene.seed, getPivot('atlasx')));
+	var y = scene.height * (0.1 + 0.3 * getFloat(scene.seed, getPivot('atlasy')));
 	var size = 30;
 	
 	applyBuffer();
@@ -201,45 +204,47 @@ function drawAtlas () {
 }
 
 function drawSky() {
-	scene.skyhue = getFloat(getPivot('skyhue'));
-	scene.skyhue2 = getFloat(getPivot('skyhue')) * 0.16;
-	scene.skyvalue1 = getFloat(getPivot('skyvalue1'), 0.6, 0.85);
-	scene.skyvalue2 = getFloat(getPivot('skyvalue2'), 0.6, 0.85);
-	scene.skynoise = getFloat(getPivot('skynoise'), 0, 0.05) + 0.05;
-	scene.skysat = getFloat(getPivot('skysat'), 0.7,0.9);
+	var ry;
+
+	scene.skyhue = getFloat(scene.seed, getPivot('skyhue'));
+	scene.skyhue2 = getFloat(scene.seed, getPivot('skyhue')) * 0.16;
+	scene.skyvalue1 = getFloat(scene.seed, getPivot('skyvalue1'), 0.6, 0.85);
+	scene.skyvalue2 = getFloat(scene.seed, getPivot('skyvalue2'), 0.6, 0.85);
+	scene.skynoise = getFloat(scene.seed, getPivot('skynoise'), 0, 0.05) + 0.05;
+	scene.skysat = getFloat(scene.seed, getPivot('skysat'), 0.7,0.9);
 	scene.night = getBool(getPivot('night'));
 
-	scene.terrainhue = scene.skyhue + 0.5 * getInt(2, getPivot('terrainoffset'));
+	scene.terrainhue = scene.skyhue + 0.5 * getInt(scene.seed, 2, getPivot('terrainoffset'));
 	scene.grasshue = getHue(getPivot('grasshue'))
 
-	scene.showbumps = getInt(3, getPivot('showbumps')) == 0;
-	scene.bumpwidth = 8 + getInt(15, getPivot('bumpwidth'));
-	scene.bumpslope = 2 * (1 + getInt(7, getPivot('bumpslope')));
-	scene.bumpheight = 0.1 + 0.25 * getFloat(getPivot('bumpheight'));
-	scene.bumpthreshhold = getFloat(getPivot('bumpthreshhold'));
+	scene.showbumps = getInt(scene.seed, 3, getPivot('showbumps')) == 0;
+	scene.bumpwidth = 8 + getInt(scene.seed, 15, getPivot('bumpwidth'));
+	scene.bumpslope = 2 * (1 + getInt(scene.seed, 7, getPivot('bumpslope')));
+	scene.bumpheight = 0.1 + 0.25 * getFloat(scene.seed, getPivot('bumpheight'));
+	scene.bumpthreshhold = getFloat(scene.seed, getPivot('bumpthreshhold'));
 
 	scene.mountainheight = 1;
 
 	if (scene.terrainhue > 1)
 		scene.terrainhue -= 1;
 	
-	var depths = 4 + getInt(4,getPivot('terraindephts'));
-	scene.noiseseed = getFloat(getPivot('noiseSeed')) * 100;
-	scene.terrainnoise = getFloat(getPivot('terrainnoise'), 0, 0.03);
+	var depths = 4 + getInt(scene.seed, 4,getPivot('terraindephts'));
+	scene.noiseseed = getFloat(scene.seed, getPivot('noiseSeed')) * 100;
+	scene.terrainnoise = getFloat(scene.seed, getPivot('terrainnoise'), 0, 0.03);
 
 	//scene.night = false;
 
 	if (scene.night) {
 		scene.skyvalue1 -= 0.6;
 		scene.skyvalue2 -= 0.4;
-		scene.starcount = 100 + getInt(getPivot('starcount'),300);
+		scene.starcount = 100 + getInt(scene.seed, getPivot('starcount'),300);
 	}
 
 	// Sky
 	for (var x = 0; x < scene.width; x++) {
 		for (var y = 0; y < Math.min(terrain1at(x), terrain2at(x)); y++) {
 			ry = y / scene.height;
-			ry = ry + getFloat(1000000 + x * y + x + y, -scene.skynoise, scene.skynoise);
+			ry = ry + getFloat(scene.seed, 1000000 + x * y + x + y, -scene.skynoise, scene.skynoise);
 			setPixel(x,y,getRGB(scene.skyhue * ry + (1 - ry) * (scene.skyhue + scene.skyhue2), scene.skysat, scene.skyvalue1 * ry + (1 - ry) * scene.skyvalue2));
 		}
 	}
@@ -248,12 +253,12 @@ function drawSky() {
 	if (scene.night) {
 		for (var i = 0; i < scene.starcount; i++) {
 			var x = getRGB(scene.skyhue, 0.2, 0.8);
-			setPixel(getInt(scene.width, 10000 + i), getInt(scene.height, 10000 + i + scene.starcount), getRGB(scene.skyhue, 0.2, 0.8));
+			setPixel(getInt(scene.seed, scene.width, 10000 + i), getInt(scene.seed, scene.height, 10000 + i + scene.starcount), getRGB(scene.skyhue, 0.2, 0.8));
 		}
-		scene.brightstars = Math.max(0, getInt(20,getPivot('brightstars')) - 8);
-		scene.starsize = 5 + getInt(15, getPivot('starsize'));
+		scene.brightstars = Math.max(0, getInt(scene.seed, 20,getPivot('brightstars')) - 8);
+		scene.starsize = 5 + getInt(scene.seed, 15, getPivot('starsize'));
 		for (var i = 0; i < scene.brightstars; i++) {
-			drawBrightStar(getInt(scene.width, 20000 + i), getInt(scene.height, 30000 + i), scene.starsize);
+			drawBrightStar(getInt(scene.seed, scene.width, 20000 + i), getInt(scene.seed, scene.height, 30000 + i), scene.starsize);
 		}
 	}
 	
@@ -262,12 +267,12 @@ function drawSky() {
 	if (!scene.night) {
 		var maxsuns = 3;
 		for (var i = 0; i < maxsuns; i++) {
-			if (getInt(100, getPivot('checkstarship' + i)) < 15) {
+			if (getInt(scene.seed, 100, getPivot('checkstarship' + i)) < 15) {
 				if (!hasSun) {
 					applyBuffer();
 					hasSun = true;
 				}
-				drawSun(getInt(scene.width, getPivot('sunx'+i)), getInt(scene.height / 2, getPivot('suny'+i)), getInt(30, getPivot('sunsize'+i)) + 10);
+				drawSun(getInt(scene.seed, scene.width, getPivot('sunx'+i)), getInt(scene.seed, scene.height / 2, getPivot('suny'+i)), getInt(scene.seed, 30, getPivot('sunsize'+i)) + 10);
 			}
 		}
 		if (hasSun) {
@@ -276,12 +281,12 @@ function drawSky() {
 	}
 
 	// Planet	
-	if (!hasSun && getInt(100, getPivot('planetvisible')) < 70) {
+	if (!hasSun && getInt(scene.seed, 100, getPivot('planetvisible')) < 70) {
 		drawPlanet();
 	}
 
 	// Atlas
-	if (getInt(100, getPivot('hasAtllas')) < 40) {
+	if (getInt(scene.seed, 100, getPivot('hasAtllas')) < 40) {
 		drawAtlas();
 	}
 	// Clouds
@@ -292,8 +297,8 @@ function drawSky() {
 	// Starships
 	var maxstarships = 7;
 	for (var i = 0; i < maxstarships; i++) {
-		if (getInt(100, getPivot('checkstarship' + i)) < 10) {
-			drawStarships(getInt(scene.width, 897985676 + i), getInt(scene.height / 2, 987686576 + i));
+		if (getInt(scene.seed, 100, getPivot('checkstarship' + i)) < 10) {
+			drawStarships(getInt(scene.seed, scene.width, 897985676 + i), getInt(scene.seed, scene.height / 2, 987686576 + i));
 		}
 	}
 }
@@ -304,9 +309,9 @@ function terrain1color(x, y) {
 		miny = Math.max(miny, terrain1at(i));
 	}
 	
-	var p = y - miny - 8 - 10 + getInt(20, 12253464 + x + y + x * y * y * y);
+	var p = y - miny - 8 - 10 + getInt(scene.seed, 20, 12253464 + x + y + x * y * y * y);
 
-	return getRGB(scene.terrainhue + getFloat(1000000 + x * y + x + y, -scene.terrainnoise, scene.terrainnoise), 0.25, (p < 0 ? 0.99 : 0.87) - (scene.night ? 0.8 : 0));
+	return getRGB(scene.terrainhue + getFloat(scene.seed, 1000000 + x * y + x + y, -scene.terrainnoise, scene.terrainnoise), 0.25, (p < 0 ? 0.99 : 0.87) - (scene.night ? 0.8 : 0));
 }
 
 function terrain1at(x, igonrebumps) {
@@ -339,9 +344,9 @@ function drawWater() {
 	}
 
 	var wy = terrain2at(wx);
-	var waterangle = 1 + 1.0 * getFloat(getPivot('waterangle'));
-	var coast = getInt(20, getPivot('coast')) + 20;
-	var coastp = getInt(100, getPivot('coastp')) / 10;
+	var waterangle = 1 + 1.0 * getFloat(scene.seed, getPivot('waterangle'));
+	var coast = getInt(scene.seed, 20, getPivot('coast')) + 20;
+	var coastp = getInt(scene.seed, 100, getPivot('coastp')) / 10;
 
 	for (var y = wy - 10; y < scene.height; y++) {
 		for (var x = wx - (y - wy) * waterangle - coast * simplex(y / 10, coastp, 4, 0, 1); x < wx + (y - wy) * waterangle + coast * simplex(y / 10, coastp + 42, 4, 0, 1); x++) {
@@ -369,7 +374,7 @@ function drawTerrain() {
 	// Base
 	var maxbases = 4;
 	for (var i = 0; i < maxbases; i++) {
-		if (getInt(100, getPivot('checkbase' + i)) < 15) {
+		if (getInt(scene.seed, 100, getPivot('checkbase' + i)) < 15) {
 			drawBase();
 		}
 	}
@@ -382,9 +387,9 @@ function drawTerrain() {
 	}
 
 	// Grass
-	if (getInt(100, getPivot('hasgrass')) < 97) {
-		scene.grasssize = getInt(50, getPivot('grasssize')) + 70;
-		scene.grassstretchiness = getInt(40, getPivot('grassstretchiness')) + 5;
+	if (getInt(scene.seed, 100, getPivot('hasgrass')) < 97) {
+		scene.grasssize = getInt(scene.seed, 50, getPivot('grasssize')) + 70;
+		scene.grassstretchiness = getInt(scene.seed, 40, getPivot('grassstretchiness')) + 5;
 
 		for (var x = 0; x < scene.width; x++) {
 			for (var y = terrain2at(x) - 2; y < scene.height; y++) {
@@ -395,7 +400,7 @@ function drawTerrain() {
 }
 
 function drawBase() {
-	var x0 = 60 + getInt(scene.width - 120, getPivot('basex'));
+	var x0 = 60 + getInt(scene.seed, scene.width - 120, getPivot('basex'));
 	var d = 50;
 	var highest = scene.height;
 	var x = 0;
@@ -427,9 +432,9 @@ function drawBase() {
 	scene.context.lineTo(x + bwidth / 3, y - 5);
 	scene.context.stroke();
 
-	if (getInt(3, getPivot('hasbuilding')) == 0) {
+	if (getInt(scene.seed, 3, getPivot('hasbuilding')) == 0) {
 		scene.context.fillStyle = getColorString(terrain1color(x,y));
-		scene.context.fillRect(x - 4 + getInt(8, getPivot('buildingoffset')), y - 8 - 5, 3 + getInt(12, getPivot('buildingwidth')), 8);
+		scene.context.fillRect(x - 4 + getInt(scene.seed, 8, getPivot('buildingoffset')), y - 8 - 5, 3 + getInt(scene.seed, 12, getPivot('buildingwidth')), 8);
 	}
 
 	setupBuffer();
@@ -443,17 +448,17 @@ function rotatevector(x, y, alpha) {
 }
 
 function drawPlanet() {
-	var x = getInt(scene.width, getPivot('planetx'));
-	var y = getInt(scene.height / 2, getPivot('planety'));
-	var radius = 30 + 100 * Math.pow(getFloat(getPivot('planetradius')), 2);
+	var x = getInt(scene.seed, scene.width, getPivot('planetx'));
+	var y = getInt(scene.seed, scene.height / 2, getPivot('planety'));
+	var radius = 30 + 100 * Math.pow(getFloat(scene.seed, getPivot('planetradius')), 2);
 
-	var planetsaturation = getFloat(getPivot('planetsaturation'));
-	var continentsize = 0.5 + 1.5 * getFloat(getPivot('continentsize'));
-	var continentdetail = 3 + getInt(4, getPivot('continentdetail'));
-	var covered = 0.4 + 0.3 * getFloat(getPivot('covered'));
+	var planetsaturation = getFloat(scene.seed, getPivot('planetsaturation'));
+	var continentsize = 0.5 + 1.5 * getFloat(scene.seed, getPivot('continentsize'));
+	var continentdetail = 3 + getInt(scene.seed, 4, getPivot('continentdetail'));
+	var covered = 0.4 + 0.3 * getFloat(scene.seed, getPivot('covered'));
 
-	var alpha = (-30 + getInt(60, getPivot('planetrotation1'))) * 3.1415 / 180; // rotational offset
-	var beta = (- 20 - getInt(30, getPivot('planetrotation2'))) * 3.1415 / 180; // rotational offset	
+	var alpha = (-30 + getInt(scene.seed, 60, getPivot('planetrotation1'))) * 3.1415 / 180; // rotational offset
+	var beta = (- 20 - getInt(scene.seed, 30, getPivot('planetrotation2'))) * 3.1415 / 180; // rotational offset	
 
 	var atmosphere = 0.03;
 
@@ -489,7 +494,7 @@ function drawPlanet() {
 			}
 
 			if (projectedradius < 1) {
-				var planettexture = simplex(theta * continentsize, phi * continentsize, continentdetail, covered, covered) * 0.08 + 0.4 + 0.5 * Math.floor((theta / 3.14159 * 10 + 0.4 * getFloat(a + b + a * b + 45345))) * 0.1;
+				var planettexture = simplex(theta * continentsize, phi * continentsize, continentdetail, covered, covered) * 0.08 + 0.4 + 0.5 * Math.floor((theta / 3.14159 * 10 + 0.4 * getFloat(scene.seed, a + b + a * b + 45345))) * 0.1;
 				setPixel(a, b, getRGB(scene.skyhue + theta * 0.03, 0.5 + 0.4 * planetsaturation, (scene.night ? 0.32 : 1.0) * planettexture), 1.0);
 			}
 		}
@@ -522,9 +527,9 @@ function drawTreeBlob(x, y, r, r_var, color, blobseed, stretchiness) {
 }
 
 function drawTree(x, y, leafcolor, treeseed) {
-	var size = 3 + getInt(5, getPivot('treesize'));
-	var blobcount = 1 + getInt(5, getPivot('treeblobcount'));
-	treeheight = 5 + getInt(20, getPivot('treeblobcount'));
+	var size = 3 + getInt(scene.seed, 5, getPivot('treesize'));
+	var blobcount = 1 + getInt(scene.seed, 5, getPivot('treeblobcount'));
+	var treeheight = 5 + getInt(scene.seed, 20, getPivot('treeblobcount'));
 	var height_var = 10;
 
 	applyBuffer();
@@ -533,15 +538,15 @@ function drawTree(x, y, leafcolor, treeseed) {
 	var blobs = [];
 	for (var i = 0; i < blobcount; i++) {
 		var blob = {'x': x - size * (blobcount - 1) / 2 + i * size,
-			'y': y - treeheight - getInt(height_var, treeseed * i + i + 122353)};
+			'y': y - treeheight - getInt(scene.seed, height_var, treeseed * i + i + 122353)};
 		blobs.push(blob);
 	}
 
 	var nodes = blobs;
 	for (var step = 0; step < blobcount - 1; step++) {
-		var x_offset = Math.floor(size * (-0.5 + getFloat(getPivot('tree_x_offset' + step + treeseed))));
+		var x_offset = Math.floor(size * (-0.5 + getFloat(scene.seed, getPivot('tree_x_offset' + step + treeseed))));
 		
-		var eliminateIndex = getInt(nodes.length - 1, treeseed + step + 3464);
+		var eliminateIndex = getInt(scene.seed, nodes.length - 1, treeseed + step + 3464);
 		var newNodes = [];
 		for (var i = 0; i < eliminateIndex; i++) {
 			newNodes.push({
@@ -585,13 +590,13 @@ function drawTree(x, y, leafcolor, treeseed) {
 }
 
 function drawTrees() {
-	var treeCount = 10 + getInt(50, getPivot('treecount'));
+	var treeCount = 10 + getInt(scene.seed, 50, getPivot('treecount'));
 	var treelocations = [];
 
 	var c = 0;
 	while (treelocations.length < treeCount) {
-		var x = getInt(scene.width, getPivot('tree_x' + c));
-		var y = getInt(scene.height, getPivot('tree_y' + c));
+		var x = getInt(scene.seed, scene.width, getPivot('tree_x' + c));
+		var y = getInt(scene.seed, scene.height, getPivot('tree_y' + c));
 		c++;
 
 		if (terrain2at(x) < y 
@@ -606,14 +611,14 @@ function drawTrees() {
 
 	for (var i = 0; i < treelocations.length; i++) {
 		var hue = treehue;
-		if (getInt(100, getPivot('specialtree' + i)) < 3) {
+		if (getInt(scene.seed, 100, getPivot('specialtree' + i)) < 3) {
 			hue += 0.5;
 		}
-		drawTree(treelocations[i].x, treelocations[i].y, getRGB(hue, 0.9, (scene.night ? 0.3 : 0.5) - 0.03 + 0.06 * getFloat(getPivot('treehueoffset' + i))), getPivot('treeseed' + i));
+		drawTree(treelocations[i].x, treelocations[i].y, getRGB(hue, 0.9, (scene.night ? 0.3 : 0.5) - 0.03 + 0.06 * getFloat(scene.seed, getPivot('treehueoffset' + i))), getPivot('treeseed' + i));
 	}
 }
 
-function draw(canvas, seed) {
+export function draw(canvas, seed) {
 	scene.seed = seed;
 
 	setupCanvas(canvas);
@@ -623,11 +628,11 @@ function draw(canvas, seed) {
 	drawSky();
 	drawTerrain();
 	
-	if (getInt(100, getPivot('hastrees')) < 70) {
+	if (getInt(scene.seed, 100, getPivot('hastrees')) < 70) {
 		drawTrees();		
 	}
 
-	if (getInt(100, getPivot('hasriver')) < 70) {
+	if (getInt(scene.seed, 100, getPivot('hasriver')) < 70) {
 		drawWater();	
 	}
 
