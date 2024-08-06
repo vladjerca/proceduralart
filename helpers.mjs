@@ -1,19 +1,3 @@
-
-// http://stackoverflow.com/a/1099670/895589
-function getQueryParams(qs) {
-    qs = qs.split('+').join(' ');
-
-    var params = {},
-        tokens,
-        re = /[?&]?([^=]+)=([^&]*)/g;
-
-    while (tokens = re.exec(qs)) {
-        params[decodeURIComponent(tokens[1])] = decodeURIComponent(tokens[2]);
-    }
-
-    return params;
-}
-
 // http://stackoverflow.com/a/17243070/895589
 
 /* accepts parameters
@@ -21,7 +5,7 @@ function getQueryParams(qs) {
  * OR 
  * h, s, v
 */
-function getRGB(h, s, v) {
+export function getRGB(h, s, v) {
     while (h > 1) h -= 1;
     while (h < 0) h += 1;
 
@@ -49,34 +33,29 @@ function getRGB(h, s, v) {
     };
 }
 
-// General random & noise functions
-function getRandomSeed() {
-    return Math.round(Math.random() * 9007199254740991);
+export function getInt(seed, max, pivot) {
+	return (seed % pivot) % max;
 }
 
-function getInt(max, pivot) {
-	return (scene.seed % pivot) % max;
-}
-
-function getBool(pivot) {
+export function getBool(pivot) {
 	return getInt(2, pivot) == 1;
 }
 
-function getFloat(pivot, from, to) {
+export function getFloat(seed, pivot, from, to) {
 	if (!from)
 		from = 0;
 	if (!to)
 		to = 1;
-	var x = ((scene.seed % pivot) % 100000) / 100000;
+	var x = (seed % pivot) % 100000 / 100000;
 	return from + (to - from) * x;
 }
 
-function getPivot(text) {
+export function getPivot(text) {
 	var myrng = new Math.seedrandom(text);
 	return Math.round(myrng() * 100000000);
 }
 
-function simplex(x, y, octaves, lowercap, uppercap) {
+export function simplex(x, y, octaves, lowercap, uppercap) {
 	if (!octaves) octaves = 6;
 	if (!lowercap) lowercap = 0;
 	if (!uppercap) uppercap = 1;
@@ -94,7 +73,7 @@ function simplex(x, y, octaves, lowercap, uppercap) {
 	return (v - lowercap) / (uppercap - lowercap);
 }
 
-function getColorString(color, alpha) {
+export function getColorString(color, alpha) {
 	if (alpha === undefined) 
 		alpha = 1;
 	return 'rgba(' + color.r + ', ' + color.g + ', ' + color.b + ', ' + alpha + ')';
