@@ -15,5 +15,8 @@
   "bugs": {
     "url": "https://github.com/vladjerca/proceduralart/issues"
   },
-  "homepage": "https://github.com/vladjerca/proceduralart#readme"
+  "homepage": "https://github.com/vladjerca/proceduralart#readme",
+  "dependencies": {
+    "toosoon-prng": "^3.0.0"
+  }
 }
