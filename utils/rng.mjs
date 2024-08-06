@@ -8,10 +8,5 @@ export const seed = parseInt(params.get('planet') ?? seeder(), 10);
 
 rng.setSeed(seed);
 
-export function randomInt(id, max) {
-    return rng.randomInt(id, 0, max);
-}
-
-export function randomBool(id) {
-    return rng.randomBoolean(id);
-}
+export const randomInt = rng.randomInt.bind(rng);
+export const randomBool = rng.randomBoolean.bind(rng);
