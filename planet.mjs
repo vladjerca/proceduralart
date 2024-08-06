@@ -1,10 +1,19 @@
 import './perlin.mjs';
-import { getBool, getColorString, getFloat, getInt, getPivot, getRGB, simplex } from './helpers.mjs';
+import {
+	randomBool,
+	randomInt,
+} from './utils/rng.mjs';
+
+import { getColorString, getFloat, getInt, getPivot, getRGB, simplex } from './helpers.mjs';
 
 var scene = {};
 
-function getHue(pivot) {
-	return (getBool(pivot + 1) ? scene.skyhue : scene.terrainhue) + 0.1 * (getInt(scene.seed, 3, pivot) - 1);
+function getHue(seed) {
+	const hue = randomBool('hue')
+		? scene.skyhue
+		: scene.terrainhue;
+
+	return hue + 0.1 * randomInt(seed, 3) - 1;
 }
 
 function setupCanvas(canvas) {
@@ -77,7 +86,8 @@ function drawBrightStar(x, y, size) {
 	setPixelRGB(x + 1, y - 1, 255, 255, 255, 0.8);
 	setPixelRGB(x - 1, y - 1, 255, 255, 255, 0.8);
 
-	p = 0;
+	var p = 0;
+	var new_p;
 	for (var i = -1; i <= 1; i += 0.05) {
 		new_p = Math.floor(size * 0.6 * i);
 		if (new_p == p)
@@ -89,11 +99,11 @@ function drawBrightStar(x, y, size) {
 }
 
 function drawStarships(x, y) {
-	var dx = getInt(scene.seed, 3, getPivot('starshipdir')) - 1;
+	var dx = randomInt('starship_direction', 3) - 1;
 	var dy = dx == 0 ? 1 : 0;
 	var dx2 = dy;
 	var dy2 = 1 - dy;
-	var size = getInt(scene.seed, 8, getPivot('starshipsize')) + 5;
+	var size = randomInt('starship_size', 8) + 5;
 	if (size % 2 == 0) size++;
 	var count = Math.floor(Math.pow(getFloat(scene.seed, getPivot('starshipcount')), 3) * 4) + 1;
 	var spread = getFloat(scene.seed, getPivot('starshipspread')) * 2;
@@ -112,7 +122,7 @@ function drawStarships(x, y) {
 	var exhausthue = scene.skyhue + 0.5;
 	if (exhausthue > 1)
 		exhausthue -= 1;
-	var exhaustlength = (3 + getInt(scene.seed, 9, getPivot('exhaustlength'))) * size;
+	var exhaustlength = (3 + randomInt('exhaust_length', 9) * size);
 
 	for (var i = 0; i < count; i++) {
 		for (var j = 0; j < exhaustlength; j++) {
@@ -212,14 +222,14 @@ function drawSky() {
 	scene.skyvalue2 = getFloat(scene.seed, getPivot('skyvalue2'), 0.6, 0.85);
 	scene.skynoise = getFloat(scene.seed, getPivot('skynoise'), 0, 0.05) + 0.05;
 	scene.skysat = getFloat(scene.seed, getPivot('skysat'), 0.7, 0.9);
-	scene.night = getBool(getPivot('night'));
+	scene.night = randomBool('night');
 
-	scene.terrainhue = scene.skyhue + 0.5 * getInt(scene.seed, 2, getPivot('terrainoffset'));
+	scene.terrainhue = scene.skyhue + 0.5 * randomInt('terrain_hue', 2);
 	scene.grasshue = getHue(getPivot('grasshue'))
 
-	scene.showbumps = getInt(scene.seed, 3, getPivot('showbumps')) == 0;
-	scene.bumpwidth = 8 + getInt(scene.seed, 15, getPivot('bumpwidth'));
-	scene.bumpslope = 2 * (1 + getInt(scene.seed, 7, getPivot('bumpslope')));
+	scene.showbumps = randomInt('show_bumps', 3) == 0;
+	scene.bumpwidth = 8 + randomInt('bump_width', 15);
+	scene.bumpslope = 2 * (1 + randomInt('bump_slope', 7));
 	scene.bumpheight = 0.1 + 0.25 * getFloat(scene.seed, getPivot('bumpheight'));
 	scene.bumpthreshhold = getFloat(scene.seed, getPivot('bumpthreshhold'));
 
@@ -228,7 +238,6 @@ function drawSky() {
 	if (scene.terrainhue > 1)
 		scene.terrainhue -= 1;
 
-	var depths = 4 + getInt(scene.seed, 4, getPivot('terraindephts'));
 	scene.noiseseed = getFloat(scene.seed, getPivot('noiseSeed')) * 100;
 	scene.terrainnoise = getFloat(scene.seed, getPivot('terrainnoise'), 0, 0.03);
 
@@ -237,7 +246,7 @@ function drawSky() {
 	if (scene.night) {
 		scene.skyvalue1 -= 0.6;
 		scene.skyvalue2 -= 0.4;
-		scene.starcount = 100 + getInt(scene.seed, getPivot('starcount'), 300);
+		scene.starcount = 100 + randomInt('star_count', 300);
 	}
 
 	// Sky
@@ -252,8 +261,17 @@ function drawSky() {
 	// Stars
 	if (scene.night) {
 		for (var i = 0; i < scene.starcount; i++) {
-			var x = getRGB(scene.skyhue, 0.2, 0.8);
-			setPixel(getInt(scene.seed, scene.width, 10000 + i), getInt(scene.seed, scene.height, 10000 + i + scene.starcount), getRGB(scene.skyhue, 0.2, 0.8));
+			var color = getRGB(scene.skyhue, 0.2, 0.8);
+			const starX = randomInt(`star_${i}_x`, scene.width);
+			const starY = randomInt(`star_${i}_y`, scene.height);
+
+			console.log('star', starX, starY);
+
+			setPixel(
+				starX,
+				starY,
+				color,
+			);
 		}
 		scene.brightstars = Math.max(0, getInt(scene.seed, 20, getPivot('brightstars')) - 8);
 		scene.starsize = 5 + getInt(scene.seed, 15, getPivot('starsize'));
