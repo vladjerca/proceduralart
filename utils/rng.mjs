@@ -1,4 +1,5 @@
 import { PRNG } from 'toosoon-prng';
+import tc from 'tinycolor2';
 import { createNoise2D } from 'simplex-noise';
 import { getQueryParams } from './getQueryParams.mjs';
 import { seeder } from './seeder.mjs';
@@ -6,7 +7,8 @@ import { seeder } from './seeder.mjs';
 const rng = new PRNG();
 const params = getQueryParams();
 export const seed = parseInt(params.get('planet') ?? seeder(), 10);
-const noise = createNoise2D(() => rng.random());
+const perlin = createNoise2D(() => rng.random(seed));
+export const noise = (x) => Math.abs(perlin(Math.cos(x), Math.sin(x)));
 
 rng.setSeed(seed);
 
@@ -19,9 +21,9 @@ export const randomColor = (id) => {
     const g = randomInt(`green_${id}`, 0, 255);
     const b = randomInt(`blue_${id}`, 0, 255);
 
-    return {
+    return tc.fromRatio({
         r,
         g,
         b,
-    };
+    });
 }

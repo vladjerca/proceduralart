@@ -1,3 +1,10 @@
+/**
+ * 
+ * @param {CanvasImageData} data 
+ * @param {number} x 
+ * @param {number} y 
+ * @param {{r: number, g: number, b: number }} color 
+ */
 export function setPixel(data, x, y, color) {
     const index = (y * data.width + x) * 4;
 
