@@ -1,23 +1,12 @@
 import { randomColor, randomFloat, noise, randomBool, randomInt } from '../../utils/rng.mjs';
+import { colors } from './colors.mjs';
+import { state } from './state.mjs';
 import { setPixel } from './setPixel.mjs';
 import { toRGB } from './toRGB.mjs';
 import { readBuffer } from './readBuffer.mjs';
 import { applyBuffer } from './applyBuffer.mjs';
 import { renderSkyBackground } from './renderSkyBackground.mjs';
-import { calculateTerrainHeight } from './calculateTerrainHeight.mjs';
-
-function renderStars(canvas) {
-    const isNight = randomBool();
-
-    if (!isNight) {
-        return;
-    }
-
-    const data = readBuffer(canvas);
-    const starCount = randomInt('star_count', 100, 300);
-
-    applyBuffer(canvas, data);
-}
+import { renderStars } from './renderStars.mjs';
 
 /**
  * 
@@ -31,9 +20,6 @@ export function renderSky(canvas) {
 /*
     function drawSky() {
     // ... (existing code)
-
-    drawSkyBackground();
-    drawStars();
     drawSunOrPlanet();
     drawAtlasIfPresent();
     drawCloudsIfNotNight();
