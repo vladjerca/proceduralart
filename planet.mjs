@@ -1,10 +1,19 @@
 import './perlin.mjs';
-import { getBool, getColorString, getFloat, getInt, getPivot, getRGB, simplex } from './helpers.mjs';
+import {
+	randomBool,
+	randomInt,
+} from './utils/rng.mjs';
+
+import { getColorString, getFloat, getInt, getPivot, getRGB, simplex } from './helpers.mjs';
 
 var scene = {};
 
-function getHue(pivot) {
-	return (getBool(pivot + 1) ? scene.skyhue : scene.terrainhue) + 0.1 * (getInt(scene.seed, 3, pivot) - 1);
+function getHue(seed) {
+	const hue = randomBool('hue')
+		? scene.skyhue
+		: scene.terrainhue;
+
+	return hue + 0.1 * randomInt(seed, 0, 3) - 1;
 }
 
 function setupCanvas(canvas) {
@@ -77,7 +86,8 @@ function drawBrightStar(x, y, size) {
 	setPixelRGB(x + 1, y - 1, 255, 255, 255, 0.8);
 	setPixelRGB(x - 1, y - 1, 255, 255, 255, 0.8);
 
-	p = 0;
+	var p = 0;
+	var new_p;
 	for (var i = -1; i <= 1; i += 0.05) {
 		new_p = Math.floor(size * 0.6 * i);
 		if (new_p == p)
@@ -89,11 +99,11 @@ function drawBrightStar(x, y, size) {
 }
 
 function drawStarships(x, y) {
-	var dx = getInt(scene.seed, 3, getPivot('starshipdir')) - 1;
+	var dx = randomInt('starship_direction', 0, 3);
 	var dy = dx == 0 ? 1 : 0;
 	var dx2 = dy;
 	var dy2 = 1 - dy;
-	var size = getInt(scene.seed, 8, getPivot('starshipsize')) + 5;
+	var size = randomInt('starship_size', 5, 15);
 	if (size % 2 == 0) size++;
 	var count = Math.floor(Math.pow(getFloat(scene.seed, getPivot('starshipcount')), 3) * 4) + 1;
 	var spread = getFloat(scene.seed, getPivot('starshipspread')) * 2;
@@ -112,7 +122,7 @@ function drawStarships(x, y) {
 	var exhausthue = scene.skyhue + 0.5;
 	if (exhausthue > 1)
 		exhausthue -= 1;
-	var exhaustlength = (3 + getInt(scene.seed, 9, getPivot('exhaustlength'))) * size;
+	var exhaustlength = randomInt('exhaust_length', 3, 12) * size;
 
 	for (var i = 0; i < count; i++) {
 		for (var j = 0; j < exhaustlength; j++) {
@@ -212,14 +222,14 @@ function drawSky() {
 	scene.skyvalue2 = getFloat(scene.seed, getPivot('skyvalue2'), 0.6, 0.85);
 	scene.skynoise = getFloat(scene.seed, getPivot('skynoise'), 0, 0.05) + 0.05;
 	scene.skysat = getFloat(scene.seed, getPivot('skysat'), 0.7, 0.9);
-	scene.night = getBool(getPivot('night'));
+	scene.night = randomBool('night');
 
-	scene.terrainhue = scene.skyhue + 0.5 * getInt(scene.seed, 2, getPivot('terrainoffset'));
+	scene.terrainhue = scene.skyhue + 0.5 * randomInt('terrain_hue', 2);
 	scene.grasshue = getHue(getPivot('grasshue'))
 
-	scene.showbumps = getInt(scene.seed, 3, getPivot('showbumps')) == 0;
-	scene.bumpwidth = 8 + getInt(scene.seed, 15, getPivot('bumpwidth'));
-	scene.bumpslope = 2 * (1 + getInt(scene.seed, 7, getPivot('bumpslope')));
+	scene.showbumps = randomInt('show_bumps', 3) == 0;
+	scene.bumpwidth = 8 + randomInt('bump_width', 15);
+	scene.bumpslope = 2 * (1 + randomInt('bump_slope', 7));
 	scene.bumpheight = 0.1 + 0.25 * getFloat(scene.seed, getPivot('bumpheight'));
 	scene.bumpthreshhold = getFloat(scene.seed, getPivot('bumpthreshhold'));
 
@@ -228,16 +238,13 @@ function drawSky() {
 	if (scene.terrainhue > 1)
 		scene.terrainhue -= 1;
 
-	var depths = 4 + getInt(scene.seed, 4, getPivot('terraindephts'));
 	scene.noiseseed = getFloat(scene.seed, getPivot('noiseSeed')) * 100;
 	scene.terrainnoise = getFloat(scene.seed, getPivot('terrainnoise'), 0, 0.03);
-
-	//scene.night = false;
 
 	if (scene.night) {
 		scene.skyvalue1 -= 0.6;
 		scene.skyvalue2 -= 0.4;
-		scene.starcount = 100 + getInt(scene.seed, getPivot('starcount'), 300);
+		scene.starcount = 100 + randomInt('star_count', 300);
 	}
 
 	// Sky
@@ -252,41 +259,60 @@ function drawSky() {
 	// Stars
 	if (scene.night) {
 		for (var i = 0; i < scene.starcount; i++) {
-			var x = getRGB(scene.skyhue, 0.2, 0.8);
-			setPixel(getInt(scene.seed, scene.width, 10000 + i), getInt(scene.seed, scene.height, 10000 + i + scene.starcount), getRGB(scene.skyhue, 0.2, 0.8));
+			var color = getRGB(scene.skyhue, 0.2, 0.8);
+			const starX = randomInt(`star_${i}_x`, 0, scene.width);
+			const starY = randomInt(`star_${i}_y`, 0, scene.height);
+
+			console.log('star', starX, starY);
+
+			setPixel(
+				starX,
+				starY,
+				color,
+			);
 		}
-		scene.brightstars = Math.max(0, getInt(scene.seed, 20, getPivot('brightstars')) - 8);
-		scene.starsize = 5 + getInt(scene.seed, 15, getPivot('starsize'));
+		scene.brightstars = Math.max(0, randomInt('bright_stars', 20) - 8);
+		scene.starsize = randomInt('star_size', 5, 15);
 		for (var i = 0; i < scene.brightstars; i++) {
-			drawBrightStar(getInt(scene.seed, scene.width, 20000 + i), getInt(scene.seed, scene.height, 30000 + i), scene.starsize);
+			const starX = randomInt(`bright_star_${i}_x`, 0, scene.width);
+			const starY = randomInt(`bright_star_${i}_y`, 0, scene.height);
+			drawBrightStar(
+				starX,
+				starY,
+				scene.starsize
+			);
 		}
 	}
 
 	// Sun
-	var hasSun = false;
-	if (!scene.night) {
-		var maxsuns = 3;
-		for (var i = 0; i < maxsuns; i++) {
-			if (getInt(scene.seed, 100, getPivot('checkstarship' + i)) < 15) {
-				if (!hasSun) {
-					applyBuffer();
-					hasSun = true;
-				}
-				drawSun(getInt(scene.seed, scene.width, getPivot('sunx' + i)), getInt(scene.seed, scene.height / 2, getPivot('suny' + i)), getInt(scene.seed, 30, getPivot('sunsize' + i)) + 10);
-			}
-		}
-		if (hasSun) {
+	var hasSun = !scene.night && randomBool('hasSun');
+	if (hasSun) {
+		const suns = randomInt('suns', 1, 3);
+
+		for (var i = 0; i < suns; i++) {
+			const sunX = randomInt(`sun_${i}_x`, 0, scene.width);
+			const sunY = randomInt(`sun_${i}_y`, 0, scene.height);
+			const sunSize = randomInt(`sun_${i}_size`, 10, 30);
+
+			applyBuffer();
+			drawSun(
+				sunX,
+				sunY,
+				sunSize,
+			);
 			setupBuffer();
 		}
 	}
 
-	// Planet	
-	if (!hasSun && getInt(scene.seed, 100, getPivot('planetvisible')) < 70) {
+	// Planet
+	const isPlanetVisible = !hasSun && randomBool('planet_visible');
+	if (isPlanetVisible) {
 		drawPlanet();
 	}
 
 	// Atlas
-	if (getInt(scene.seed, 100, getPivot('hasAtllas')) < 40) {
+	const isAtlasVisible = randomBool('atlas_visible');
+	if (isAtlasVisible) {
 		drawAtlas();
 	}
 	// Clouds
@@ -295,11 +321,15 @@ function drawSky() {
 	}
 
 	// Starships
-	var maxstarships = 7;
-	for (var i = 0; i < maxstarships; i++) {
-		if (getInt(scene.seed, 100, getPivot('checkstarship' + i)) < 10) {
-			drawStarships(getInt(scene.seed, scene.width, 897985676 + i), getInt(scene.seed, scene.height / 2, 987686576 + i));
-		}
+	const starships = randomInt('starships', 0, 7);
+	for (var i = 0; i < starships; i++) {
+		const starshipX = randomInt(`starship_${i}_x`, 0, scene.width);
+		const starshipY = randomInt(`starship_${i}_y`, 0, scene.height / 2);
+
+		drawStarships(
+			starshipX,
+			starshipY
+		);
 	}
 }
 
@@ -309,7 +339,7 @@ function terrain1color(x, y) {
 		miny = Math.max(miny, terrain1at(i));
 	}
 
-	var p = y - miny - 8 - 10 + getInt(scene.seed, 20, 12253464 + x + y + x * y * y * y);
+	var p = y - miny;
 
 	return getRGB(scene.terrainhue + getFloat(scene.seed, 1000000 + x * y + x + y, -scene.terrainnoise, scene.terrainnoise), 0.25, (p < 0 ? 0.99 : 0.87) - (scene.night ? 0.8 : 0));
 }
@@ -345,8 +375,8 @@ function drawWater() {
 
 	var wy = terrain2at(wx);
 	var waterangle = 1 + 1.0 * getFloat(scene.seed, getPivot('waterangle'));
-	var coast = getInt(scene.seed, 20, getPivot('coast')) + 20;
-	var coastp = getInt(scene.seed, 100, getPivot('coastp')) / 10;
+	const coast = randomInt('coast', 20, 40);
+	const coastp = randomInt('coastp', 0, 10) / 10;
 
 	for (var y = wy - 10; y < scene.height; y++) {
 		for (var x = wx - (y - wy) * waterangle - coast * simplex(y / 10, coastp, 4, 0, 1); x < wx + (y - wy) * waterangle + coast * simplex(y / 10, coastp + 42, 4, 0, 1); x++) {
@@ -372,11 +402,9 @@ function drawTerrain() {
 	}
 
 	// Base
-	var maxbases = 4;
+	var maxbases = randomInt('max_bases', 0, 7);
 	for (var i = 0; i < maxbases; i++) {
-		if (getInt(scene.seed, 100, getPivot('checkbase' + i)) < 15) {
-			drawBase();
-		}
+		drawBase();
 	}
 
 	// Terrain 2
@@ -387,9 +415,10 @@ function drawTerrain() {
 	}
 
 	// Grass
-	if (getInt(scene.seed, 100, getPivot('hasgrass')) < 97) {
-		scene.grasssize = getInt(scene.seed, 50, getPivot('grasssize')) + 70;
-		scene.grassstretchiness = getInt(scene.seed, 40, getPivot('grassstretchiness')) + 5;
+	const isGrassyPlanet = randomBool('has_grass', 0.97);
+	if (isGrassyPlanet) {
+		scene.grasssize = randomInt('grass_size', 50, 120);
+		scene.grassstretchiness = randomInt('grass_stretchiness', 20, 45);
 
 		for (var x = 0; x < scene.width; x++) {
 			for (var y = terrain2at(x) - 2; y < scene.height; y++) {
@@ -400,7 +429,7 @@ function drawTerrain() {
 }
 
 function drawBase() {
-	var x0 = 60 + getInt(scene.seed, scene.width - 120, getPivot('basex'));
+	var x0 = randomInt('base_x', 60, scene.width - 120);
 	var d = 50;
 	var highest = scene.height;
 	var x = 0;
@@ -432,9 +461,20 @@ function drawBase() {
 	scene.context.lineTo(x + bwidth / 3, y - 5);
 	scene.context.stroke();
 
-	if (getInt(scene.seed, 3, getPivot('hasbuilding')) == 0) {
+	const hasBuilding = randomBool('has_building');
+
+	if (hasBuilding) {
 		scene.context.fillStyle = getColorString(terrain1color(x, y));
-		scene.context.fillRect(x - 4 + getInt(scene.seed, 8, getPivot('buildingoffset')), y - 8 - 5, 3 + getInt(scene.seed, 12, getPivot('buildingwidth')), 8);
+		const x0 = x + randomInt('building_x', -4, 4);
+		const x1 = x0 + randomInt('building_width', 3, 8);
+		const y0 = y - 8 - 5;
+		const y1 = 8;
+		scene.context.fillRect(
+			x0,
+			y0,
+			x1,
+			y1,
+		);
 	}
 
 	setupBuffer();

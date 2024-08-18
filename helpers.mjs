@@ -50,6 +50,7 @@ export function getFloat(seed, pivot, from, to) {
 	return from + (to - from) * x;
 }
 
+// TODO: remove this function and replace with toosoon-prng
 export function getPivot(text) {
 	var myrng = new Math.seedrandom(text);
 	return Math.round(myrng() * 100000000);
