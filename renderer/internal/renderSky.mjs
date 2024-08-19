@@ -7,6 +7,7 @@ import { readBuffer } from './readBuffer.mjs';
 import { applyBuffer } from './applyBuffer.mjs';
 import { renderSkyBackground } from './renderSkyBackground.mjs';
 import { renderStars } from './renderStars.mjs';
+import { renderSun } from './renderSun.mjs';
 
 /**
  * 
@@ -15,6 +16,7 @@ import { renderStars } from './renderStars.mjs';
 export function renderSky(canvas) {
     renderSkyBackground(canvas);
     renderStars(canvas);
+    renderSun(canvas);
 }
 
 /*
