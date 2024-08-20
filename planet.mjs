@@ -263,8 +263,6 @@ function drawSky() {
 			const starX = randomInt(`star_${i}_x`, 0, scene.width);
 			const starY = randomInt(`star_${i}_y`, 0, scene.height);
 
-			console.log('star', starX, starY);
-
 			setPixel(
 				starX,
 				starY,

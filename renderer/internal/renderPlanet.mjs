@@ -2,7 +2,6 @@ import { randomFloat, noise, randomInt } from '../../utils/rng.mjs';
 import { colors } from './constants/colors.mjs';
 import { state } from './constants/state.mjs';
 import { setPixel } from './canvas/setPixel.mjs';
-import { toRGB } from './toRGB.mjs';
 import { readBuffer } from './canvas/readBuffer.mjs';
 import { applyBuffer } from './canvas/applyBuffer.mjs';
 
@@ -39,7 +38,10 @@ export function renderPlanet(canvas) {
 
     const atmosphere = 0.03;
     const atmosphereRadius = radius * 1.03;
-    const atmosphereColor = { ...toRGB(colors.planet), a: 0.6 };
+    const atmosphereColor = colors.planet
+        .clone()
+        .setAlpha(.6)
+        .toRgb();
 
     const data = readBuffer(canvas);
 
@@ -64,19 +66,19 @@ export function renderPlanet(canvas) {
             const phi = Math.atan(betaY, betaZ);
 
             if (projectedRadius >= 1 && projectedRadius < 1 + atmosphere) {
-                setPixel(data, a, b, { ...atmosphereColor, a: 0.6 });
+                setPixel(data, a, b, atmosphereColor);
             }
 
 
             if (projectedRadius < 1) {
-                const ringVariance =
-                    noise(theta * ringGap) + 0.5 * theta * phi;
+                const ringVariance = 1 -
+                    (noise(theta * ringGap) + 0.5 * theta * phi);
 
-                const surfaceColor = toRGB({
-                    h: colors.planet.h + theta * .03,
-                    s: colors.planet.s,
-                    v: colors.planet.v * ringVariance
-                });
+                const surfaceColor = colors.planet
+                    .clone()
+                    .spin(theta * 5)
+                    .darken(ringVariance * 25)
+                    .toRgb();
 
                 setPixel(data, a, b, surfaceColor);
             }

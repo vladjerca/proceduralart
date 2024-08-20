@@ -1,8 +1,6 @@
 import { randomInt } from '../../utils/rng.mjs';
 import { colors } from './constants/colors.mjs';
 import { state } from './constants/state.mjs';
-import { toRGB } from './toRGB.mjs';
-import { toRGBString } from './toRGBString.mjs';
 
 /**
  * 
@@ -16,14 +14,6 @@ export function renderSun(canvas) {
     const { width, height } = canvas;
     const context = canvas.getContext('2d', { willReadFrequently: true });
 
-    const sunColor = toRGB({
-        h: colors.primary_sky.h,
-        s: 0.5,
-        v: 0.8,
-    })
-    const sunStyle = toRGBString(sunColor);
-    const glowStyle = toRGBString({ ...sunColor, alpha: 0.25 });
-
     for (let i = 0; i < state.sunCount; i++) {
         const x = randomInt(`sun_x_${i}`, 0, width);
         const y = randomInt(`sun_y_${i}`, 0, height);
@@ -31,12 +21,14 @@ export function renderSun(canvas) {
 
         context.beginPath();
         context.arc(x, y, size * 1.1, 0, 2 * Math.PI);
-        context.fillStyle = glowStyle;
+        context.fillStyle = colors.sun.clone()
+            .setAlpha(.25)
+            .toRgbString();
         context.fill();
 
         context.beginPath();
         context.arc(x, y, size, 0, 2 * Math.PI);
-        context.fillStyle = sunStyle;
+        context.fillStyle = colors.sun.toRgbString();
         context.fill();
     }
 }

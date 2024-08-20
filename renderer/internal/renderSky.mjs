@@ -3,7 +3,6 @@ import { randomColor, randomFloat, noise, randomBool, randomInt } from '../../ut
 import { colors } from './constants/colors.mjs';
 import { state } from './constants/state.mjs';
 import { setPixel } from './canvas/setPixel.mjs';
-import { toRGB } from './toRGB.mjs';
 import { readBuffer } from './canvas/readBuffer.mjs';
 import { applyBuffer } from './canvas/applyBuffer.mjs';
 import { renderSkyBackground } from './renderSkyBackground.mjs';

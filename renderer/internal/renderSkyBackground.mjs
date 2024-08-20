@@ -1,10 +1,10 @@
 import { applyBuffer } from './canvas/applyBuffer.mjs';
 import { readBuffer } from './canvas/readBuffer.mjs';
 import { setPixel } from './canvas/setPixel.mjs';
-import { toRGB } from './toRGB.mjs';
 import { colors } from './constants/colors.mjs';
 import { calculateTerrainHeight } from './calculateTerrainHeight.mjs';
-
+import { state } from './constants/state.mjs';
+import tc from 'tinycolor2';
 
 /**
  * 
@@ -22,17 +22,19 @@ export function renderSkyBackground(canvas) {
         );
 
         for (let y = 0; y < maxTerrainHeight; y++) {
-            const relativeHeight = 1.0 * y / maxTerrainHeight;
+            const relativeHeight = y / maxTerrainHeight;
+            const sunWeight = state.isNight
+                ? relativeHeight
+                : 1 - relativeHeight;
 
-            const hsv = {
-                h: colors.primary_sky.h * relativeHeight + (1 - relativeHeight) * colors.secondary_sky.h,
-                s: colors.primary_sky.s,
-                v: colors.primary_sky.v * relativeHeight + (1 - relativeHeight) * colors.primary_sky.v
-            };
+            const skyColor = colors.sky
+                .clone()
+                .darken(state.isNight ? 32.5 : 0)
+                .spin(Math.cos(sunWeight * Math.PI) * 10)
+                .lighten(sunWeight);
 
-            const skyColor = toRGB(hsv);
 
-            setPixel(data, x, y, skyColor);
+            setPixel(data, x, y, skyColor.toRgb());
         }
     }
 

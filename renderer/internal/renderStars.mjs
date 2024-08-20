@@ -2,7 +2,6 @@ import { randomInt } from '../../utils/rng.mjs';
 import { colors } from './constants/colors.mjs';
 import { state } from './constants/state.mjs';
 import { setPixel } from './canvas/setPixel.mjs';
-import { toRGB } from './toRGB.mjs';
 import { readBuffer } from './canvas/readBuffer.mjs';
 import { applyBuffer } from './canvas/applyBuffer.mjs';
 import { calculateTerrainHeight } from './calculateTerrainHeight.mjs';
@@ -32,8 +31,8 @@ export function renderStars(canvas) {
             continue;
         }
 
-        setPixel(data, x, y, toRGB(colors.star));
-
-        applyBuffer(canvas, data);
+        setPixel(data, x, y, colors.star.toRgb());
     }
+
+    applyBuffer(canvas, data);
 }
