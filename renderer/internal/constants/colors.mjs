@@ -1,5 +1,5 @@
 import { state } from './state.mjs';
-import { randomFloat } from '../../utils/rng.mjs';
+import { randomFloat } from '../../../utils/rng.mjs';
 
 export const colors = {
     primary_sky: {

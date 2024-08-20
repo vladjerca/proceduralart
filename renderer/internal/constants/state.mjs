@@ -1,4 +1,4 @@
-import { randomBool, randomInt } from "../../utils/rng.mjs";
+import { randomBool, randomInt } from '../../../utils/rng.mjs';
 
 const isNight = () => randomBool('is_night');
 const starCount = () => randomInt('star_count', 200, 400);

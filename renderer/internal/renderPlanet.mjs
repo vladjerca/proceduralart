@@ -1,6 +1,6 @@
 import { randomFloat, noise, randomInt } from '../../utils/rng.mjs';
-import { colors } from './colors.mjs';
-import { state } from './state.mjs';
+import { colors } from './constants/colors.mjs';
+import { state } from './constants/state.mjs';
 import { setPixel } from './setPixel.mjs';
 import { toRGB } from './toRGB.mjs';
 import { readBuffer } from './readBuffer.mjs';

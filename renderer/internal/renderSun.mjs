@@ -1,6 +1,6 @@
 import { randomInt } from '../../utils/rng.mjs';
-import { colors } from './colors.mjs';
-import { state } from './state.mjs';
+import { colors } from './constants/colors.mjs';
+import { state } from './constants/state.mjs';
 import { toRGB } from './toRGB.mjs';
 import { dimensions } from './dimensions.mjs';
 import { toRGBString } from './toRGBString.mjs';
