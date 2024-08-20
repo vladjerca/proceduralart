@@ -1,4 +1,4 @@
-import { clearCanvas } from './internal/clearCanvas.mjs';
+import { clearCanvas } from './internal/canvas/clearCanvas.mjs';
 import { renderSky } from './internal/renderSky.mjs';
 
 /**

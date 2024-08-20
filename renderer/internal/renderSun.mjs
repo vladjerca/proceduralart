@@ -2,7 +2,6 @@ import { randomInt } from '../../utils/rng.mjs';
 import { colors } from './constants/colors.mjs';
 import { state } from './constants/state.mjs';
 import { toRGB } from './toRGB.mjs';
-import { dimensions } from './dimensions.mjs';
 import { toRGBString } from './toRGBString.mjs';
 
 /**
@@ -14,7 +13,7 @@ export function renderSun(canvas) {
         return;
     }
 
-    const { width, height } = dimensions(canvas);
+    const { width, height } = canvas;
     const context = canvas.getContext('2d', { willReadFrequently: true });
 
     const sunColor = toRGB({

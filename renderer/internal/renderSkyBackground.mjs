@@ -1,6 +1,6 @@
-import { applyBuffer } from './applyBuffer.mjs';
-import { readBuffer } from './readBuffer.mjs';
-import { setPixel } from './setPixel.mjs';
+import { applyBuffer } from './canvas/applyBuffer.mjs';
+import { readBuffer } from './canvas/readBuffer.mjs';
+import { setPixel } from './canvas/setPixel.mjs';
 import { toRGB } from './toRGB.mjs';
 import { colors } from './constants/colors.mjs';
 import { calculateTerrainHeight } from './calculateTerrainHeight.mjs';
