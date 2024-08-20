@@ -12,6 +12,11 @@ export const colors = {
         s: randomFloat('sky_saturation', 0.7, 0.9),
         v: randomFloat('sky_value_2', 0.6, 0.85)
     },
+    planet: {
+        h: randomFloat('sky_hue'),
+        s: randomFloat('planet_saturation', 0.5, 1),
+        v: state.isNight ? 0.4 : 0.8,
+    },
     star: {
         h: randomFloat('sky_hue'),
         s: .2,
