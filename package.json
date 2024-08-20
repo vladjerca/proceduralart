@@ -18,6 +18,7 @@
   "homepage": "https://github.com/vladjerca/proceduralart#readme",
   "dependencies": {
     "simplex-noise": "^4.0.3",
+    "tinycolor2": "^1.6.0",
     "toosoon-prng": "^3.0.0"
   }
 }
