@@ -2,8 +2,6 @@ import { randomFloat, randomInt } from '../../utils/rng.mjs';
 import { getContext } from './canvas/getContext.mjs';
 import { drawPath } from './draw/drawPath.mjs';
 import { drawFuzzyCircle } from './draw/drawFuzzyCircle.mjs';
-import { state } from './constants/state.mjs';
-import { colors } from './constants/colors.mjs';
 
 const ATLAS_SIZE = randomInt('atlas_size', 50, 100);
 const ATLAS_X_OFFSET = 0.2;
@@ -37,9 +35,6 @@ export function renderAtlas({
     const primerColor = colors.sky
         .clone()
         .darken(30);
-    const atmosphereColor = colors.sky
-        .clone()
-        .darken(10);
 
     const primerPoints = [
         [x, y - ATLAS_SIZE * 1.2],
@@ -50,6 +45,10 @@ export function renderAtlas({
     drawPath(context, primerPoints, primerColor.toRgbString());
 
     drawFuzzyCircle(context, x, y, ATLAS_SIZE * 0.5, ATLAS_CORE_ACTIVITY, ATLAS_CORE_COLOR_RGB_STRING);
+
+    const atmosphereColor = colors.sky
+        .clone()
+        .darken(10);
 
     const topRightPoints = [
         [x, y - ATLAS_SIZE * 1.2],
