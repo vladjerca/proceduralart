@@ -20,7 +20,7 @@ function calculateTerrain2Height(x, xMax) {
         0.75 +
         0.25 * (
             1 -
-            noise(x / 600) -
+            Math.abs(noise(x / 600)) -
             0.3 * Math.pow((x - xMax / 2) / (xMax / 2), 2)
         )
     );
