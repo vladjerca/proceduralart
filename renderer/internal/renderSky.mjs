@@ -11,6 +11,9 @@ import { renderSun } from './renderSun.mjs';
 import { renderPlanet } from './renderPlanet.mjs';
 
 import { renderAtlas } from './renderAtlas.mjs';
+import { renderClouds } from './renderClouds.mjs';
+import { calculateTerrainHeight } from './calculateTerrainHeight.mjs';
+
 
 /**
  * 
@@ -20,8 +23,12 @@ export function renderSky(canvas) {
     renderSkyBackground({ canvas, colors, state });
     renderStars({ canvas, colors, state });
     renderSun({ canvas, colors, state });
-    renderPlanet({ canvas, colors, state });
+    /**
+     * hide until we figure out a prettier way to render the planet
+        renderPlanet({ canvas, colors, state });
+     */
     renderAtlas({ canvas, colors, state });
+    renderClouds({ canvas, colors, state });
 }
 
 /*
