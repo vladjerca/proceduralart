@@ -1,5 +1,4 @@
-import { randomColor, randomFloat, noise, randomBool, randomInt } from '../../../utils/rng.mjs';
-
+import { randomFloat } from '../../../utils/rng.mjs';
 
 /**
  * 
@@ -14,11 +13,11 @@ export function drawFuzzyCircle(context, x, y, radius, fuzzFactor, color) {
     context.fillStyle = color;
     context.beginPath();
 
-    const numPoints = 80;
+    const numPoints = 60;
 
     for (let i = 0; i < numPoints; i++) {
         const angle = (i / numPoints) * 2 * Math.PI;
-        const fuzzyRadius = radius + noise(i) * fuzzFactor - fuzzFactor / 2;
+        const fuzzyRadius = radius + randomFloat(`fuzzy_${i}`, 0, 1) * fuzzFactor - fuzzFactor / 2;
 
         const pointX = x + fuzzyRadius * Math.cos(angle);
         const pointY = y + fuzzyRadius * Math.sin(angle);
