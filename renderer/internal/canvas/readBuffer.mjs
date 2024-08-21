@@ -1,10 +1,11 @@
+import { getContext } from './getContext.mjs';
+
 /**
  * 
  * @param {HTMLCanvasElement} canvas 
  * @returns 
  */
 export function readBuffer(canvas) {
-    return canvas
-        .getContext('2d', { willReadFrequently: true })
+    return getContext(canvas)
         .getImageData(0, 0, canvas.width, canvas.height);
 }

@@ -1,6 +1,7 @@
 import { randomInt } from '../../utils/rng.mjs';
 import { colors } from './constants/colors.mjs';
 import { state } from './constants/state.mjs';
+import { getContext } from './canvas/getContext.mjs';
 
 /**
  * 
@@ -12,7 +13,7 @@ export function renderSun(canvas) {
     }
 
     const { width, height } = canvas;
-    const context = canvas.getContext('2d', { willReadFrequently: true });
+    const context = getContext(canvas);
 
     for (let i = 0; i < state.sunCount; i++) {
         const x = randomInt(`sun_x_${i}`, 0, width);
