@@ -30,9 +30,3 @@ export function renderSky(canvas) {
     renderClouds({ canvas, colors, state });
     renderStarships({ canvas, colors, state });
 }
-
-/*
-    function drawSky() {
-    drawStarships();
-    }
-*/
