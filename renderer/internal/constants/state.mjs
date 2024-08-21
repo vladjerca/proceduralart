@@ -13,4 +13,5 @@ export const state = {
     sunCount: sunCount(),
     isSunVisible: isSunVisible(),
     isPlanetVisible: isPlanetVisible(),
+    isAtlasVisible: randomBool('is_atlas_visible', 0.6),
 }

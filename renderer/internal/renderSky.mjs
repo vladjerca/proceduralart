@@ -10,6 +10,8 @@ import { renderStars } from './renderStars.mjs';
 import { renderSun } from './renderSun.mjs';
 import { renderPlanet } from './renderPlanet.mjs';
 
+import { renderAtlas } from './renderAtlas.mjs';
+
 /**
  * 
  * @param {HTMLCanvasElement} canvas 
@@ -19,12 +21,12 @@ export function renderSky(canvas) {
     renderStars(canvas);
     renderSun(canvas);
     renderPlanet(canvas);
+    renderAtlas(canvas);
 }
 
 /*
     function drawSky() {
     // ... (existing code)
-    drawAtlasIfPresent();
     drawCloudsIfNotNight();
     drawStarships();
     }
