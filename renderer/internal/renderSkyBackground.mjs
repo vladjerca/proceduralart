@@ -1,16 +1,21 @@
 import { applyBuffer } from './canvas/applyBuffer.mjs';
 import { readBuffer } from './canvas/readBuffer.mjs';
 import { setPixel } from './canvas/setPixel.mjs';
-import { colors } from './constants/colors.mjs';
 import { calculateTerrainHeight } from './calculateTerrainHeight.mjs';
-import { state } from './constants/state.mjs';
-import tc from 'tinycolor2';
 
 /**
+ * Renders the sky background on the canvas.
  * 
- * @param {HTMLCanvasElement} canvas 
+ * @param {Object} options - The options for rendering the sky background.
+ * @param {HTMLCanvasElement} options.canvas - The canvas element to render on.
+ * @param {Object} options.colors - The colors used for rendering.
+ * @param {Object} options.state - The state of the renderer.
  */
-export function renderSkyBackground(canvas) {
+export function renderSkyBackground({
+    canvas,
+    colors,
+    state,
+}) {
     const data = readBuffer(canvas);
 
     const width = canvas.width;

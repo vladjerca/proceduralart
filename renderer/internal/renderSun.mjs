@@ -1,13 +1,19 @@
 import { randomInt } from '../../utils/rng.mjs';
-import { colors } from './constants/colors.mjs';
-import { state } from './constants/state.mjs';
 import { getContext } from './canvas/getContext.mjs';
 
 /**
+ * Renders the sun on the canvas.
  * 
- * @param {HTMLCanvasElement} canvas 
+ * @param {Object} options - The options for rendering the sun.
+ * @param {HTMLCanvasElement} options.canvas - The canvas element to render on.
+ * @param {Object} options.colors - The colors to use for rendering.
+ * @param {Object} options.state - The state of the sun.
  */
-export function renderSun(canvas) {
+export function renderSun({
+    canvas,
+    colors,
+    state,
+}) {
     if (!state.isSunVisible) {
         return;
     }

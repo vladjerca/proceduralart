@@ -19,10 +19,18 @@ function rotateVector({ x, y }, alpha) {
 }
 
 /**
+ * Renders a planet on the canvas.
  * 
- * @param {HTMLCanvasElement} canvas 
+ * @param {Object} options - The options for rendering the planet.
+ * @param {HTMLCanvasElement} options.canvas - The canvas element to render the planet on.
+ * @param {Object} options.colors - The colors to use for rendering the planet.
+ * @param {Object} options.state - The state of the planet.
  */
-export function renderPlanet(canvas) {
+export function renderPlanet({
+    canvas,
+    colors,
+    state,
+}) {
     if (!state.isPlanetVisible) {
         return;
     }

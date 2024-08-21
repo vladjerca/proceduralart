@@ -14,10 +14,18 @@ const ATLAS_CORE_ACTIVITY = randomFloat('atlas_core_activity', 5, 20);
 const ATLAS_CORE_COLOR_RGB_STRING = 'rgb(254, 0, 0)';
 
 /**
+ * Renders the atlas on the canvas.
  * 
- * @param {HTMLCanvasElement} canvas 
+ * @param {Object} options - The options for rendering the atlas.
+ * @param {HTMLCanvasElement} options.canvas - The canvas element to render on.
+ * @param {Object} options.colors - The colors used for rendering.
+ * @param {Object} options.state - The state of the atlas.
  */
-export function renderAtlas(canvas) {
+export function renderAtlas({
+    canvas,
+    colors,
+    state,
+}) {
     if (!state.isAtlasVisible) {
         return;
     }

@@ -17,11 +17,11 @@ import { renderAtlas } from './renderAtlas.mjs';
  * @param {HTMLCanvasElement} canvas 
  */
 export function renderSky(canvas) {
-    renderSkyBackground(canvas);
-    renderStars(canvas);
-    renderSun(canvas);
-    renderPlanet(canvas);
-    renderAtlas(canvas);
+    renderSkyBackground({ canvas, colors, state });
+    renderStars({ canvas, colors, state });
+    renderSun({ canvas, colors, state });
+    renderPlanet({ canvas, colors, state });
+    renderAtlas({ canvas, colors, state });
 }
 
 /*

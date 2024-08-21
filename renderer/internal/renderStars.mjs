@@ -1,17 +1,22 @@
 import { randomInt } from '../../utils/rng.mjs';
-import { colors } from './constants/colors.mjs';
-import { state } from './constants/state.mjs';
 import { setPixel } from './canvas/setPixel.mjs';
 import { readBuffer } from './canvas/readBuffer.mjs';
 import { applyBuffer } from './canvas/applyBuffer.mjs';
 import { calculateTerrainHeight } from './calculateTerrainHeight.mjs';
 
 /**
+ * Renders stars on the canvas based on the provided state.
  * 
- * @param {HTMLCanvasElement} canvas 
- * @returns 
+ * @param {Object} options - The options for rendering stars.
+ * @param {HTMLCanvasElement} options.canvas - The canvas element to render stars on.
+ * @param {Object} options.colors - The colors to use for rendering stars.
+ * @param {Object} options.state - The state object containing information about the current state.
  */
-export function renderStars(canvas) {
+export function renderStars({
+    canvas,
+    colors,
+    state,
+}) {
     if (!state.isNight) {
         return;
     }
