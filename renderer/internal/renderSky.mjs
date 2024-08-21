@@ -12,8 +12,7 @@ import { renderPlanet } from './renderPlanet.mjs';
 
 import { renderAtlas } from './renderAtlas.mjs';
 import { renderClouds } from './renderClouds.mjs';
-import { calculateTerrainHeight } from './calculateTerrainHeight.mjs';
-
+import { renderStarships } from './renderStarships.mjs';
 
 /**
  * 
@@ -29,12 +28,11 @@ export function renderSky(canvas) {
      */
     renderAtlas({ canvas, colors, state });
     renderClouds({ canvas, colors, state });
+    renderStarships({ canvas, colors, state });
 }
 
 /*
     function drawSky() {
-    // ... (existing code)
-    drawCloudsIfNotNight();
     drawStarships();
     }
 */

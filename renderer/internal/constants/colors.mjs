@@ -23,4 +23,9 @@ export const colors = {
         s: 0.5,
         v: 0.8,
     }),
+    exhaust: tc.fromRatio({
+        h: randomFloat('sky_hue') * 0.25,
+        s: 1,
+        v: 1,
+    }),
 };
