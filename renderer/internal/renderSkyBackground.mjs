@@ -1,8 +1,3 @@
-import { applyBuffer } from './canvas/applyBuffer.mjs';
-import { readBuffer } from './canvas/readBuffer.mjs';
-import { setPixel } from './canvas/setPixel.mjs';
-import { calculateTerrainHeight } from './calculateTerrainHeight.mjs';
-
 /**
  * Renders the sky background on the canvas.
  * 
@@ -16,32 +11,25 @@ export function renderSkyBackground({
     colors,
     state,
 }) {
-    const data = readBuffer(canvas);
+    const context = canvas.getContext('2d');
+    const { width, height } = canvas;
 
-    const width = canvas.width;
-    const height = canvas.height;
+    const gradient = context.createLinearGradient(0, 0, 0, height);
 
-    for (let x = 0; x < width; x++) {
-        const maxTerrainHeight = height * Math.min(
-            ...calculateTerrainHeight(x, width)
-        );
+    const highPointColor = colors
+        .sky
+        .clone()
+        .darken(state.isNight ? 32.5 : 0)
+        .spin(Math.cos(0) * 10);
+    const lowPointColor = colors
+        .sky
+        .clone()
+        .darken(state.isNight ? 32.5 : 0)
+        .spin(Math.cos(Math.PI) * 10);
 
-        for (let y = 0; y < maxTerrainHeight; y++) {
-            const relativeHeight = y / maxTerrainHeight;
-            const sunWeight = state.isNight
-                ? relativeHeight
-                : 1 - relativeHeight;
+    gradient.addColorStop(0, highPointColor.toRgbString());
+    gradient.addColorStop(1, lowPointColor.toRgbString())
 
-            const skyColor = colors.sky
-                .clone()
-                .darken(state.isNight ? 32.5 : 0)
-                .spin(Math.cos(sunWeight * Math.PI) * 10)
-                .lighten(sunWeight);
-
-
-            setPixel(data, x, y, skyColor.toRgb());
-        }
-    }
-
-    applyBuffer(canvas, data);
+    context.fillStyle = gradient;
+    context.fillRect(0, 0, width, height);
 }
